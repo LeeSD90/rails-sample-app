@@ -28,6 +28,7 @@ class PasswordResetsController < ApplicationController
   		render 'edit'
   	elsif @user.update_attributes(user_params)
   		log_in @user
+  		@user.update_attribute(:reset_digest, nil)
   		flash[:success] = "Password has been changed successfully."
   		redirect_to @user
   	else
@@ -38,7 +39,7 @@ class PasswordResetsController < ApplicationController
   private
 
   		def user_params
-  			params.require(:user).permite(:password, :password_confirmation)
+  			params.require(:user).permit(:password, :password_confirmation)
   		end
 
   		def get_user
