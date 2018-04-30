@@ -5,11 +5,18 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   def setup
   		@user = users(:bob)
   		@other_user = users(:archer)
+      @inactive = users(:bill)
   end  
 
   test "should get new" do
     get signup_path
     assert_response :success
+  end
+
+  test "should redirect show when user is not activated" do
+    log_in_as(@user)
+    get user_path(@inactive)
+    assert_redirected_to root_url
   end
 
   test "should redirect edit when not logged in" do
