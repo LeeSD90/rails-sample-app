@@ -5,6 +5,7 @@ class User < ApplicationRecord
    has_many :active_relationships, class_name:  "Relationship",
                                   foreign_key: "follower_id",
                                   dependent:   :destroy
+   has_many :following, through: :active_relationships, source: :followed
 
 	before_save { email.downcase! }
 	before_create :create_activation_digest
@@ -63,6 +64,18 @@ class User < ApplicationRecord
 
 	def feed
 		Micropost.where("user_id = ?", id)
+	end
+
+	def follow(user)
+		following << user
+	end
+
+	def unfollow(user)
+		following.delete(user)
+	end
+
+	def following?(user)
+		following.include?(user)
 	end
 
 	private
